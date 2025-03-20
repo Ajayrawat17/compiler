@@ -1,36 +1,32 @@
-
-    %{
+%{
     #include <stdio.h>
     int char_count = 0, word_count = 0, space_count = 0;
-    %}
-    
-    %option noyywrap
-    
-    %%
-    
-    [ \t\n]   { space_count++; }
-    \w+       { word_count++; }
-    .         { char_count++; }
-    
-    %%
-    
-    int main() {
-        FILE *file = fopen("input.txt", "r");  
-        if (!file) {
-            printf("Error opening file!\n");
-            return 1;
-        }
-        
-        yyin = file;
-        yylex();
-    
-        printf("Total Characters: %d\n", char_count);
-        printf("Total Words: %d\n", word_count);
-        printf("Total White Spaces: %d\n", space_count);
-    
-        fclose(file);
-        return 0;
+%}
+
+%option noyywrap
+
+%%
+
+[ \t\n]   { space_count++; }  // Space, Tab aur Newline count karna
+[a-zA-Z0-9]+ { word_count++; char_count += yyleng; }  // Words count karna aur unka length char_count me jodna
+.         { char_count++; }   // Baaki characters count karna
+
+%%
+
+int main() {
+    FILE *file = fopen("input.txt", "r");  
+    if (!file) {
+        printf("Error opening file!\n");
+        return 1;
     }
     
-    int yywrap() { return 1; }
-    
+    yyin = file;
+    yylex();
+
+    printf("Total Characters: %d\n", char_count);
+    printf("Total Words: %d\n", word_count);
+    printf("Total White Spaces: %d\n", space_count);
+
+    fclose(file);
+    return 0;
+}
